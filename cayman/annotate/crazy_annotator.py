@@ -160,7 +160,6 @@ class CazyAnnotator:
 
         annotations_with_fold_counts_series = pd.Series(annotations_with_fold_counts_series)
         
-        print("Merging annotations...")
         self.annotations_filtered = pd.concat(list(annotations_with_fold_counts_series.apply(CazyAnnotator.merge_annots)))
 
         tmp2 = self.annotations_filtered.groupby("sequenceID")
@@ -170,7 +169,6 @@ class CazyAnnotator:
             names.append(name)
             aSeries.append(group)
         aSeries = pd.Series(aSeries)
-        print("Resolving overlapping annotations...")
         self.annotations_filtered = pd.concat(list(aSeries.apply(CazyAnnotator.resolve_overlapping_annotations)))
 
         # Write start and end coordinates out as integers and not floats
@@ -277,7 +275,7 @@ class CazyAnnotator:
     def annotate_sequences_with_hmm(self, hmm_index):
         import pandas as pd
         pipeline = pyhmmer.plan7.Pipeline(alphabet, background=self.background)
-        hmm =self.hmms.hmm_objects[hmm_index]
+        hmm = self.hmms.hmm_objects[hmm_index]
         hits = pipeline.search_hmm(hmm, self.sequences.sequences)
         res = []
         for hit in hits:

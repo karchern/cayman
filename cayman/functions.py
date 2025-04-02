@@ -98,17 +98,20 @@ def run_profile(args):
 
 
 def run_proteome_annotation(args):
+    from datetime import datetime
 
     if args.cutoffs is None:
         args.cutoffs = os.path.join(args.hmmdb, "cutoffs.csv")
 
     annotator = CazyAnnotator()
-    print("Reading HMMs")
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Reading HMMs")
     annotator.read_hmms(os.path.join(args.hmmdb, "hmms"))
-    print("Reading sequences")
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Reading sequences")
     annotator.read_sequences(path_to_sequences=args.proteins)
-    print("Annotating sequences (can take a few minutes; be patient)")
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Annotating sequences")
     annotator.annotate_sequences_with_all_hmms(threads=args.threads)
-    print("Filtering and merging annotations over folds")
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Filtering and merging annotations over folds")
     annotator.curate_annotations(precomputed_hmm_cutoffs=args.cutoffs)
     annotator.annotations_filtered.to_csv(args.output_file, index=False)
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Done.")
+
